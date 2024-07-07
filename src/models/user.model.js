@@ -43,7 +43,6 @@ const userSchema = new Schema(
 );
 
 userSchema.pre("save", async function (next) {
-  console.log("testing pre hoks ");
   if (!this.isModified("password")) return next();
 
   this.password = await bcrypt.hash(this.password, 10);
@@ -54,7 +53,7 @@ userSchema.methods.isPasswordValid = async function (password) {
 };
 
 userSchema.methods.generateAccessToken = async function () {
-  jwt.sign(
+  return jwt.sign(
     { _id: this._id, name: this.name, email: this.email },
     process.env.ACCESS_TOKEN_SECRET,
     {
@@ -63,7 +62,7 @@ userSchema.methods.generateAccessToken = async function () {
   );
 };
 userSchema.methods.generateRefreshToken = async function () {
-  jwt.sign({ _id: this._id }, process.env.REFRESH_TOKEN_SECRET, {
+  return jwt.sign({ _id: this._id }, process.env.REFRESH_TOKEN_SECRET, {
     expiresIn: process.env.REFRESH_TOKEN_EXPIRE,
   });
 };
