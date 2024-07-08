@@ -1,4 +1,4 @@
-import express, { urlencoded } from "express";
+import express from "express";
 import cors from "cors";
 
 const app = express();
@@ -10,7 +10,9 @@ app.use(express.static("public"));
 
 //routes
 import userRouter from "./routes/user.route.js";
+import taskRouter from "./routes/tasks.route.js";
 
 //authRouter
 app.use("/api/v1/users", userRouter);
+app.use("/api/v1/tasks", taskRouter);
 export { app };
