@@ -55,12 +55,21 @@ const getAllTask = asyncHandler(async (req, res) => {
     .json(new ApiResponse(201, tasks, "All tasks successfully fetched"));
 });
 
+const getTask = asyncHandler(async (req, res) => {
+  const { task_id } = req.params;
+
+  const tasks = await Task.findById(task_id);
+  res
+    .status(200)
+    .json(new ApiResponse(201, tasks, "Task successfully fetched"));
+});
+
 const deleteTask = asyncHandler(async (req, res) => {
-  const taskId = req.params;
-  if (!taskId) {
+  const { task_id } = req.params;
+  if (!task_id) {
     throw new ApiError(400, "Invalid task");
   }
-  await Task.findByIdAndDelete(taskId);
+  await Task.findByIdAndDelete(task_id);
   res.status(200).json(new ApiResponse(201, {}, "Task deleted successfully"));
 });
-export { createTask, editTask, getAllTask, deleteTask };
+export { createTask, editTask, getAllTask, deleteTask, getTask };
