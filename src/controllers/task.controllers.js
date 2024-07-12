@@ -34,7 +34,6 @@ const editTask = asyncHandler(async (req, res) => {
     { $set: updateData },
     { new: true }
   );
-  console.log(task_id);
   if (!updatedTask) {
     throw new ApiError(400, "Task not found");
   }
@@ -44,4 +43,24 @@ const editTask = asyncHandler(async (req, res) => {
       new ApiResponse(201, updatedTask, "Task has been edited successfully")
     );
 });
-export { createTask, editTask };
+
+const getAllTask = asyncHandler(async (req, res) => {
+  const userId = req.user?._id;
+  if (!userId) {
+    throw new ApiError(400, "Unauthorized user ");
+  }
+  const tasks = await Task.find({ user: userId });
+  res
+    .status(200)
+    .json(new ApiResponse(201, tasks, "All tasks successfully fetched"));
+});
+
+const deleteTask = asyncHandler(async (req, res) => {
+  const taskId = req.params;
+  if (!taskId) {
+    throw new ApiError(400, "Invalid task");
+  }
+  await Task.findByIdAndDelete(taskId);
+  res.status(200).json(new ApiResponse(201, {}, "Task deleted successfully"));
+});
+export { createTask, editTask, getAllTask, deleteTask };
