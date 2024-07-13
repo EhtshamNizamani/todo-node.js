@@ -97,4 +97,24 @@ const updateStatus = asyncHandler(async (req, res) => {
     .json(new ApiResponse(201, updatedTask, "Task updated successfully"));
 });
 
-export { createTask, editTask, getAllTask, deleteTask, getTask, updateStatus };
+const getTasksByPriority = asyncHandler(async (req, res) => {
+  const { priority } = req.query;
+  if (!priority) {
+    throw new ApiError(400, "Priority parameter is required");
+  }
+
+  const tasks = await Task.find({ user: req.user?._id, priority: priority });
+  res
+    .status(200)
+    .json(new ApiResponse(201, tasks, `All ${priority} task fetched`));
+});
+
+export {
+  createTask,
+  editTask,
+  getAllTask,
+  deleteTask,
+  getTask,
+  updateStatus,
+  getTasksByPriority,
+};
