@@ -72,4 +72,29 @@ const deleteTask = asyncHandler(async (req, res) => {
   await Task.findByIdAndDelete(task_id);
   res.status(200).json(new ApiResponse(201, {}, "Task deleted successfully"));
 });
-export { createTask, editTask, getAllTask, deleteTask, getTask };
+
+const updateStatus = asyncHandler(async (req, res) => {
+  const task_id = req.params.task_id;
+  const status = req.body.status;
+
+  const task = await Task.findById(task_id);
+
+  if (!task) {
+    throw new ApiError(400, "Invalid task");
+  }
+  const updatedTask = await Task.findByIdAndUpdate(
+    task_id,
+    { status: status.toLowerCase() },
+    {
+      new: true,
+    }
+  );
+  if (!updatedTask) {
+    throw new ApiError(400, "No data found");
+  }
+  res
+    .status(200)
+    .json(new ApiResponse(201, updatedTask, "Task updated successfully"));
+});
+
+export { createTask, editTask, getAllTask, deleteTask, getTask, updateStatus };
